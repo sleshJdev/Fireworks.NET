@@ -52,9 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Distances\EuclideanDistanceTests.cs" />
+    <Compile Include="Explode\ParallelExploderTests.cs" />
+    <Compile Include="Explode\TestDataSource.cs" />
     <Compile Include="Generation\AttractRepulseSparkMutatorTests.cs" />
     <Compile Include="Explode\ExploderTests.cs" />
-    <Compile Include="Generation\AbstractSourceData.cs" />
+    <Compile Include="Generation\TestDataSource.cs" />
     <Compile Include="Generation\AttractRepulseSparkGeneratorTests.cs" />
     <Compile Include="Extensions\DoubleExtensionsTests.cs" />
     <Compile Include="Model\AlgorithmStateTests.cs" />

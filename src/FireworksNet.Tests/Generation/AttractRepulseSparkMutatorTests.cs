@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FireworksNet.Tests.Generation
 {
-    public class AttractRepulseSparkMutatorTests : AbstractSourceData
+    public class AttractRepulseSparkMutatorTests : TestDataSource
     {
         [Fact]
         public void CreateInstanceOfAttractRepulseSparkMutator_PassValidParameter()

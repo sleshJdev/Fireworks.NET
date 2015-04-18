@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FireworksNet.Tests.Generation
 {
-    public class AttractRepulseSparkGeneratorTests : AbstractSourceData
+    public class AttractRepulseSparkGeneratorTests : TestDataSource
     {
         [Fact]
         public void CreateSpark_MustReturnNotNullFirework()
@@ -19,11 +19,11 @@ namespace FireworksNet.Tests.Generation
             var bestSolution = Substitute.For<Solution>(0);
             var dimensions = Substitute.For<IList<Dimension>>();
             var randomizer = Substitute.For<System.Random>();
-            var distribution = Substitute.For<ContinuousUniformDistribution>(AbstractSourceData.Amplitude - AbstractSourceData.Delta, AbstractSourceData.Amplitude + AbstractSourceData.Delta);
+            var distribution = Substitute.For<ContinuousUniformDistribution>(TestDataSource.Amplitude - TestDataSource.Delta, TestDataSource.Amplitude + TestDataSource.Delta);
             var epicenter = Substitute.For<Firework>(expectedFireworkType, expectedBirthStepNumber - 1);
             var qualities = Substitute.For<IEnumerable<double>>();
             var sparks = Substitute.For<Dictionary<FireworkType, int>>();
-            var explosion = Substitute.For<FireworkExplosion>(epicenter, expectedBirthStepNumber, AbstractSourceData.Amplitude, sparks);
+            var explosion = Substitute.For<FireworkExplosion>(epicenter, expectedBirthStepNumber, TestDataSource.Amplitude, sparks);
 
             var sparkGenerator = new AttractRepulseSparkGenerator(bestSolution, dimensions, distribution, randomizer);
 
