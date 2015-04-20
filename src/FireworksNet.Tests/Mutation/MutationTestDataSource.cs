@@ -5,9 +5,9 @@ using FireworksNet.Model;
 using NSubstitute;
 using FireworksNet.Generation;
 
-namespace FireworksNet.Tests.Generation
+namespace FireworksNet.Tests.Mutation
 {
-    public abstract class TestDataSource
+    public abstract class MutationTestDataSource
     {
         public const double Amplitude = 1.0D;
         public const double Delta = 0.1D;       
@@ -21,7 +21,7 @@ namespace FireworksNet.Tests.Generation
 
                 var epicenter = mutableFirework;
                 var sparks = Substitute.For<Dictionary<FireworkType, int>>();
-                var explosion = Substitute.For<FireworkExplosion>(epicenter, 1, Amplitude, sparks);
+                var explosion = Substitute.For<FireworkExplosion>(epicenter, 1, MutationTestDataSource.Amplitude, sparks);
 
                 return new[]
                 {
@@ -35,7 +35,7 @@ namespace FireworksNet.Tests.Generation
         {
             var bestSolution = Substitute.For<Solution>(0);
             var dimensions = Substitute.For<IList<Dimension>>();
-            var distribution = Substitute.For<ContinuousUniformDistribution>(Amplitude - Delta, Amplitude + Delta);
+            var distribution = Substitute.For<ContinuousUniformDistribution>(MutationTestDataSource.Amplitude - MutationTestDataSource.Delta, MutationTestDataSource.Amplitude + MutationTestDataSource.Delta);
             var randomizer = Substitute.For<System.Random>();
             var generator = Substitute.For<AttractRepulseSparkGenerator>(bestSolution, dimensions, distribution, randomizer);
 
@@ -45,7 +45,7 @@ namespace FireworksNet.Tests.Generation
         public static FireworkExplosion CreateFireworkExplosion(Firework epicenter)
         {
             var sparks = Substitute.For<Dictionary<FireworkType, int>>();
-            var explosion = Substitute.For<FireworkExplosion>(epicenter, 1, Amplitude, sparks);
+            var explosion = Substitute.For<FireworkExplosion>(epicenter, 1, MutationTestDataSource.Amplitude, sparks);
 
             return explosion;
         }  
