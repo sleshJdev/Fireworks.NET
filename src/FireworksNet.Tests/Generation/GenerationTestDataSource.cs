@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using FireworksNet.Distributions;
+﻿using FireworksNet.Distributions;
 using FireworksNet.Model;
 using NSubstitute;
-using FireworksNet.Generation;
+using System.Collections.Generic;
 
 namespace FireworksNet.Tests.Generation
 {

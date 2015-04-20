@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using FireworksNet.Algorithm.Implementation;
-using FireworksNet.Explode;
+﻿using FireworksNet.Explode;
 using FireworksNet.Model;
-using FireworksNet.Random;
 using NSubstitute;
+using System;
+using System.Collections.Generic;
 using Xunit;
-using Xunit.Extensions;
 
 
 namespace FireworksNet.Tests.Explode

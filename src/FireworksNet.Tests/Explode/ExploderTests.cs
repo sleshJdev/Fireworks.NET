@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using FireworksNet.Explode;
+﻿using FireworksNet.Explode;
 using FireworksNet.Model;
+using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace FireworksNet.Tests.Explode

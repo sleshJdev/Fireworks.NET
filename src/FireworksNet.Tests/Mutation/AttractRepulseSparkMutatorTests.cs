@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using FireworksNet.Model;
+﻿using FireworksNet.Model;
 using FireworksNet.Mutation;
 using NSubstitute;
+using System;
+using System.Collections.Generic;
 using Xunit;
-using FireworksNet.Explode;
 
 namespace FireworksNet.Tests.Mutation
 {

@@ -1,11 +1,7 @@
-﻿using FireworksNet.Distributions;
-using FireworksNet.Model;
+﻿using FireworksNet.Model;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FireworksNet.Tests.Explode
 {
