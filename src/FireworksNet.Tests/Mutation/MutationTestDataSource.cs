@@ -4,15 +4,32 @@ using FireworksNet.Distributions;
 using FireworksNet.Model;
 using NSubstitute;
 using FireworksNet.Generation;
+using FireworksNet.Selection;
 
 namespace FireworksNet.Tests.Mutation
 {
     public abstract class MutationTestDataSource
     {
         public const double Amplitude = 1.0D;
-        public const double Delta = 0.1D;       
+        public const double Delta = 0.1D;
 
-        public static IEnumerable<object[]> DataForTestMethodMutateFireworkOfAttractRepulseSparkMutator
+        public static IEnumerable<object[]> DataForTestCreationOfFireworkSearchMutator
+        {
+            get
+            {
+                Action<IEnumerable<Firework>> calculator = ((e) => { });//simply stub
+                var generator = CreateAttractRepulseSparkGenerator();
+                var selector = Substitute.For<BestFireworkSelector>(Substitute.For<Func<IEnumerable<Firework>, Firework>>());
+                return new[]
+                {
+                    new object[]{null,       generator, selector, 10, "calculator"},
+                    new object[]{calculator, null,      selector, 10, "generator"},
+                    new object[]{calculator, generator, null,     10, "selector"}
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> DataForTestMethodMutate
         {
             get
             {

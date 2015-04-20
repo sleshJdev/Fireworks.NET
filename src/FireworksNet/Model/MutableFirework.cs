@@ -9,7 +9,7 @@ namespace FireworksNet.Model
     public class MutableFirework : Firework
     {
         /// <summary>
-        /// Create instance of MutableFirework class
+        /// Initializes a new instance of the <see cref="MutableFirework"/> class.
         /// </summary>
         /// <param name="fireworkType">The type of the firework (or spark this firework has been originated from).</param>
         /// <param name="birthStepNumber">The number of step this firework was created at.</param>
@@ -18,6 +18,17 @@ namespace FireworksNet.Model
         /// <exception cref="System.ArgumentNullException"> if <paramref name="coordinates"/>is <c>null</c>.</exception>
         public MutableFirework(FireworkType fireworkType, int birthStepNumber, IDictionary<Dimension, double> coordinates)
             : base(fireworkType, birthStepNumber, coordinates) 
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MutableFirework"/> class.
+        /// </summary>
+        /// <param name="fireworkType">The type of the firework (or spark this firework
+        /// has been originated from).</param>
+        /// <param name="birthStepNumber">The number of step this firework was created at.</param>
+        public MutableFirework(FireworkType fireworkType, int birthStepNumber)
+            : base(fireworkType, birthStepNumber)
         {
         }
 

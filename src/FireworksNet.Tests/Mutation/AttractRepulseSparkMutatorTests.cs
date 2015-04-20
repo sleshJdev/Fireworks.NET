@@ -30,7 +30,8 @@ namespace FireworksNet.Tests.Mutation
             Assert.Equal(expectedParamName, exception.ParamName);
         }
 
-        [Theory, MemberData("DataForTestMethodMutateFireworkOfAttractRepulseSparkMutator")]
+        [Theory]
+        [MemberData("DataForTestMethodMutate")]
         public void MutateFirework_PassEachParameterAsNullAndOtherIsCorrect_ArgumentNullExceptionThrown(
             MutableFirework mutableFirework, FireworkExplosion explosion, String expectedParamName)
         {

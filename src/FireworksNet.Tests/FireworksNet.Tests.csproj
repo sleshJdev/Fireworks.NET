@@ -69,6 +69,7 @@
     <Compile Include="Model\InitialExplosionTests.cs" />
     <Compile Include="Model\RangeTests.cs" />
     <Compile Include="Model\SolutionTests.cs" />
+    <Compile Include="Mutation\FireworkSearchMutatorTests.cs" />
     <Compile Include="Mutation\MutationTestDataSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selection\BestSelectorTests.cs" />

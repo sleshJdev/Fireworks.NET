@@ -34,10 +34,7 @@ namespace FireworksNet.Mutation
         /// <exception cref="System.ArgumentException">
         /// if <paramref name="searchExplosionsCount"/> is negative.
         /// </exception>
-        public FireworkSearchMutator(Action<IEnumerable<Firework>> calculator,
-            ISparkGenerator generator,
-            IFireworkSelector selector,
-            int searchExplosionsCount)
+        public FireworkSearchMutator(Action<IEnumerable<Firework>> calculator,ISparkGenerator generator, IFireworkSelector selector, int searchExplosionsCount)
         {
             if (calculator == null)
             {
@@ -56,7 +53,7 @@ namespace FireworksNet.Mutation
 
             if (searchExplosionsCount < 1)
             {
-                throw new ArgumentException("searchExplosionsCount");
+                throw new ArgumentOutOfRangeException("searchExplosionsCount");
             }
 
             this.calculator = calculator;
@@ -74,11 +71,18 @@ namespace FireworksNet.Mutation
         /// <param name="explosion">The explosion that gives birth to the spark.</param>
         public void MutateFirework(ref MutableFirework mutableFirework, FireworkExplosion explosion)
         {
-            Debug.Assert(mutableFirework != null, "Mutable firework is null");
-            Debug.Assert(explosion != null, "Explosion is null");
+            if (mutableFirework == null)
+            {
+                throw new ArgumentNullException("mutableFirework");
+            }
+
+            if (explosion == null)
+            {
+                throw new ArgumentNullException("explosion");
+            }
+
             Debug.Assert(explosion.ParentFirework != null, "Explosion parent firework is null");
-            Debug.Assert(explosion.ParentFirework.Coordinates != null, "Explosion parent firework coordinate collection is null");
-            Debug.Assert(searchExplosionsCount < 1, "Search explosions count < 1");
+            Debug.Assert(explosion.ParentFirework.Coordinates != null, "Explosion parent firework coordinate collection is null");             
 
             for (int i = 0; i < searchExplosionsCount; ++i)
             {
@@ -87,7 +91,7 @@ namespace FireworksNet.Mutation
 
                 this.calculator(sparks);
 
-                Firework newState = this.selector.SelectFireworks(sparks).First();//best firework
+                Firework newState = this.selector.SelectFireworks(sparks).First();//select best firework
                 Debug.Assert(newState != null, "New state firework is null");
 
                 mutableFirework.Update(newState);
