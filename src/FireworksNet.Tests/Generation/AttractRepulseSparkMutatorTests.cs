@@ -13,26 +13,20 @@ namespace FireworksNet.Tests.Generation
         [Fact]
         public void CreateInstanceOfAttractRepulseSparkMutator_PassValidParameter()
         {
-            //Arrange
             var generator = CreateAttractRepulseSparkGenerator();          
 
-            //Act
             var mutator = new AttractRepulseSparkMutator(generator);
                 
-            //Assert
             Assert.NotNull(mutator);
         }
 
         [Fact]
         public void CreateInstanceOfAttractRepulseSparkMutator_PassParameterAsNull_ArgumentNullExceptionThrown()
         {
-            //Arrange
             const string expectedParamName = "generator";
             
-            //Act
             ArgumentNullException exception = Assert.Throws<ArgumentNullException>(() => new AttractRepulseSparkMutator(null));
 
-            //Assert
             Assert.Equal(expectedParamName, exception.ParamName);
         }
 
@@ -40,21 +34,17 @@ namespace FireworksNet.Tests.Generation
         public void MutateFirework_PassEachParameterAsNullAndOtherIsCorrect_ArgumentNullExceptionThrown(
             MutableFirework mutableFirework, FireworkExplosion explosion, String expectedParamName)
         {
-            //Arrange
             var generator = CreateAttractRepulseSparkGenerator();
             var mutator = new AttractRepulseSparkMutator(generator);
 
-            //Act
             ArgumentException exception = Assert.Throws<ArgumentNullException>(() => mutator.MutateFirework(ref mutableFirework, explosion));
         
-            //Assert
             Assert.Equal(expectedParamName, exception.ParamName);
         }
 
         [Fact]
         public void MutateFirework_PassValidParameters_ShouldChangeFireworkState()
         {
-            //Arrange
             Range range = new Range(-10, 10);
             IList<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(new Dimension(range));
@@ -79,12 +69,10 @@ namespace FireworksNet.Tests.Generation
             var explosion = CreateFireworkExplosion(mutableFirework);
             var generator = CreateAttractRepulseSparkGenerator();
             generator.CreateSpark(explosion).Returns(mutateFirework);
-            var mutator = Substitute.For<AttractRepulseSparkMutator>(generator);
+            var mutator = new AttractRepulseSparkMutator(generator);
 
-            //Act            
             mutator.MutateFirework(ref mutableFirework, explosion);
 
-            //Assert
             Assert.NotNull(mutableFirework);
             Assert.Equal(mutableFirework.BirthStepNumber, mutateFirework.BirthStepNumber);
             Assert.Equal(mutableFirework.Quality, mutateFirework.Quality);
