@@ -6,7 +6,7 @@ using FireworksNet.Explode;
 using FireworksNet.Model;
 using FireworksNet.Generation;
 
-namespace FireworksNet.Explode
+namespace FireworksNet.Mutation
 {
     /// <summary>
     /// Wrapper for AttractRepulseSparkGenerator, as described in 2013 GPU paper.

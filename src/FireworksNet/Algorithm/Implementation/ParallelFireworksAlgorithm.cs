@@ -11,6 +11,7 @@ using FireworksNet.Algorithm.Implementation;
 using FireworksNet.Selection;
 using FireworksNet.Random;
 using FireworksNet.Generation;
+using FireworksNet.Mutation;
 
 namespace FireworksNet.Algorithm
 {

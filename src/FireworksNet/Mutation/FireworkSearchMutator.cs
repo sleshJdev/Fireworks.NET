@@ -8,7 +8,7 @@ using FireworksNet.Selection;
 using FireworksNet.Algorithm;
 using FireworksNet.Generation;
 
-namespace FireworksNet.Explode
+namespace FireworksNet.Mutation
 {
     /// <summary>
     /// Implements search algorithm.

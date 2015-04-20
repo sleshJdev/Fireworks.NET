@@ -57,9 +57,9 @@
     <Compile Include="Differentiation\IDifferentiator.cs" />
     <Compile Include="Distances\DistanceBase.cs" />
     <Compile Include="Distributions\ContinuousUniformDistribution.cs" />
-    <Compile Include="Explode\FireworkSearchMutator.cs" />
     <Compile Include="Explode\IExploder.cs" />
-    <Compile Include="Explode\IFireworkMutator.cs" />
+    <Compile Include="Explode\ParallelExploder.cs" />
+    <Compile Include="Explode\ParallelExploderSettings.cs" />
     <Compile Include="Fit\IFit.cs" />
     <Compile Include="Fit\PolynomialFit.cs" />
     <Compile Include="Mutation\AttractRepulseSparkMutator.cs" />
@@ -89,6 +89,7 @@
     <Compile Include="Model\MutableFirework.cs" />
     <Compile Include="Model\Solution.cs" />
     <Compile Include="Model\TId.cs" />
+    <Compile Include="Mutation\FireworkSearchMutator.cs" />
     <Compile Include="Mutation\IFireworkMutator.cs" />
     <Compile Include="Problems\Benchmark\Ackley.cs" />
     <Compile Include="Problems\Benchmark\Tablet.cs" />
