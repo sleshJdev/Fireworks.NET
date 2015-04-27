@@ -149,6 +149,7 @@ namespace FireworksNet.Algorithm
             }
 
             this.CalculateQualities(state.Fireworks);
+            this.exploder.RecalculateAmplitude(this.bestSolution, fireworkQualities);
 
             return state;
         }       
