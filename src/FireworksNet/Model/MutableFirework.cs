@@ -6,8 +6,20 @@ using System.Threading.Tasks;
 
 namespace FireworksNet.Model
 {
+    /// <summary>
+    /// Wrapper for Firework
+    /// </summary>
     public class MutableFirework : Firework
     {
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="firework">The firework to wrap</param>
+        public MutableFirework(Firework firework)
+            : this(firework.FireworkType, firework.BirthStepNumber, firework.Coordinates)
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MutableFirework"/> class.
         /// </summary>

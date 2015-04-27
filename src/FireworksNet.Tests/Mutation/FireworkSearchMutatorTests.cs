@@ -95,11 +95,11 @@ namespace FireworksNet.Tests.Mutation
 
             Action<IEnumerable<Firework>> calculator = ((e) => 
             { 
-                for (int i = 0; i < majorValue; ++i)//0-th firework is best, because his quality(min) is optimal
+                for (int i = 0; i < majorValue; ++i)//0-th firework is best, because his quality(minimum) is optimal
                 {
                     e.ElementAt(i).Quality = shift + i;
                 }
-            });//simply stub
+            });
             
             var generator = CreateAttractRepulseSparkGenerator();
             generator.CreateSparks(explosion).Returns(sparks);

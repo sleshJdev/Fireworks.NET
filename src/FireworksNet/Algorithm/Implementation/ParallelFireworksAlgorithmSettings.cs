@@ -16,13 +16,18 @@
         /// A - Maximum explosion amplitude. 
         /// A recommended take 1. 
         /// </summary>
-        public double Amplitude { get; set; }        
+        public double Amplitude { get; set; }
+
+        /// <summary>
+        /// Â - Maximum explosion amplitude.
+        /// </summary>
+        public double ExplosionSparksMaximumAmplitude { get; set; }
 
         /// <summary>
         /// δ - Constant for scaling factor which is multiplied distance by each dimension. 
         /// δ should take (0; 1)
         /// </summary>
-        public double Delta { get; set; }
+        public double Delta { get; set; }        
 
         /// <summary>
         /// L - Quantity of steps of research.
