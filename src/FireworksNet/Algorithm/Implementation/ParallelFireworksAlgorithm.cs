@@ -1,18 +1,17 @@
-﻿using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using FireworksNet.Algorithm;
-using FireworksNet.Problems;
-using FireworksNet.StopConditions;
-using FireworksNet.Model;
-using FireworksNet.Explode;
+﻿using FireworksNet.Algorithm.Implementation;
 using FireworksNet.Distributions;
-using FireworksNet.Algorithm.Implementation;
-using FireworksNet.Selection;
-using FireworksNet.Random;
+using FireworksNet.Explode;
 using FireworksNet.Generation;
+using FireworksNet.Model;
 using FireworksNet.Mutation;
+using FireworksNet.Problems;
+using FireworksNet.Random;
+using FireworksNet.Selection;
+using FireworksNet.StopConditions;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace FireworksNet.Algorithm
 {

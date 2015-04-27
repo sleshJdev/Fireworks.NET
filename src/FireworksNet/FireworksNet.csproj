@@ -78,7 +78,6 @@
     <Compile Include="Generation\ExplosionSparkGenerator.cs" />
     <Compile Include="Generation\GaussianSparkGenerator.cs" />
     <Compile Include="Generation\InitialSparkGenerator.cs" />
-    <Compile Include="Generation\ParallelInitialSparkGenerator.cs" />
     <Compile Include="Generation\ISparkGenerator.cs" />
     <Compile Include="Generation\SparkGeneratorBase.cs" />
     <Compile Include="Model\AlgorithmState.cs" />
