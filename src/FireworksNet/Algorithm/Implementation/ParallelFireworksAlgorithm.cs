@@ -182,8 +182,8 @@ namespace FireworksNet.Algorithm
             Debug.Assert(this.randomizer != null, "Generator cannot be null");
 
             InitialExplosion explosion = new InitialExplosion(this.Settings.FixedQuantitySparks);
-            ParallelInitialSparkGenerator sparkGenerator = new ParallelInitialSparkGenerator(this.ProblemToSolve.Dimensions, this.randomizer);
-            IEnumerable<MutableFirework> sparks = sparkGenerator.CreateSparks(explosion);            
+            ISparkGenerator sparkGenerator = new InitialSparkGenerator(this.ProblemToSolve.Dimensions, this.randomizer);
+            IEnumerable<MutableFirework> sparks = MakeMutable(sparkGenerator.CreateSparks(explosion));            
 
             Debug.Assert(sparks != null, "sparks is null");
 
@@ -195,6 +195,18 @@ namespace FireworksNet.Algorithm
             CalculateQualities(state.Fireworks);
 
             return state;
+        }
+
+        private IEnumerable<MutableFirework> MakeMutable(IEnumerable<Firework> collection)
+        {
+            Firework[] sparks = collection.ToArray();
+            IList<MutableFirework> mutableSparks = new List<MutableFirework>(sparks.Length);
+            for (int i = 0; i < sparks.Length; ++i)
+            {
+                mutableSparks.Add(new MutableFirework(sparks[i]));
+            }
+
+            return mutableSparks;
         }
 
         private void CalculateQualities(IEnumerable<Firework> sparks)
