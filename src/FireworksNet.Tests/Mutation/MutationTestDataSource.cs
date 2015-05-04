@@ -17,7 +17,7 @@ namespace FireworksNet.Tests.Mutation
         {
             get
             {
-                Action<IEnumerable<Firework>> calculator = ((e) => { });//simply stub
+                var calculator = Substitute.For<Action<IEnumerable<Firework>>>();
                 var generator = CreateAttractRepulseSparkGenerator();
                 var selector = Substitute.For<BestFireworkSelector>(Substitute.For<Func<IEnumerable<Firework>, Firework>>());
                 return new[]

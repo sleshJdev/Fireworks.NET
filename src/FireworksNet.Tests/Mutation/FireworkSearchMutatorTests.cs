@@ -39,7 +39,7 @@ namespace FireworksNet.Tests.Mutation
         [Fact]
         public void CreationFireworkSearchMutator_PassValidParameters_MustReturnNotNullFireworkSearchMutator()
         {
-            Action<IEnumerable<Firework>> calculator = ((e) => { });//simply stub
+            var calculator = Substitute.For<Action<IEnumerable<Firework>>>();
             var generator = CreateAttractRepulseSparkGenerator();
             var selector = Substitute.For<BestFireworkSelector>(Substitute.For<Func<IEnumerable<Firework>, Firework>>());
             var searchExplosionsCount = 5;
@@ -54,7 +54,7 @@ namespace FireworksNet.Tests.Mutation
         public void MutateFirework_PassEachParameterAsNullAndOtherIsCorrect_ArgumentNullExceptionThrown(
             MutableFirework mutableFirework, FireworkExplosion explosion, String expectedParamName)
         {
-            Action<IEnumerable<Firework>> calculator = ((e) => { });//simply stub
+            var calculator = Substitute.For<Action<IEnumerable<Firework>>>();
             var generator = CreateAttractRepulseSparkGenerator();
             var selector = Substitute.For<BestFireworkSelector>(Substitute.For<Func<IEnumerable<Firework>, Firework>>());
             var searchExplosionsCount = 5;

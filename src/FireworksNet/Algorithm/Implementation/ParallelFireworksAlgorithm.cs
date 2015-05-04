@@ -248,7 +248,11 @@ namespace FireworksNet.Algorithm
 
             InitialExplosion explosion = new InitialExplosion(this.Settings.FixedQuantitySparks);
             ISparkGenerator sparkGenerator = new InitialSparkGenerator(this.ProblemToSolve.Dimensions, this.randomizer);
-            IEnumerable<MutableFirework> sparks = this.MakeMutant(sparkGenerator.CreateSparks(explosion));
+            IEnumerable<Firework> originSparks = sparkGenerator.CreateSparks(explosion);
+
+            Debug.Assert(originSparks != null, "Origin sparks collection is null");
+
+            IEnumerable<MutableFirework> sparks = this.MakeMutant(originSparks);
 
             Debug.Assert(sparks != null, "sparks is null");
 

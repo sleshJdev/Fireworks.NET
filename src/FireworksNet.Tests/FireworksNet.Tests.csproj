@@ -51,6 +51,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\AlgorithmTestDataSource.cs" />
+    <Compile Include="Algorithm\ParallelFireworkAlgorithmTests.cs" />
     <Compile Include="Differentiation\DifferentiationTests.cs" />
     <Compile Include="Explode\ExplodeTestDataSource.cs" />
     <Compile Include="Explode\ParallelExploderTests.cs" />

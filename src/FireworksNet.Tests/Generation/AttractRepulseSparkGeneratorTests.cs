@@ -19,7 +19,7 @@ namespace FireworksNet.Tests.Generation
             var bestSolution = Substitute.For<Solution>(0);
             var dimensions = Substitute.For<IList<Dimension>>();
             var randomizer = Substitute.For<System.Random>();
-            var distribution = Substitute.For<ContinuousUniformDistribution>(GenerationTestDataSource.Amplitude - GenerationTestDataSource.Delta, GenerationTestDataSource.Amplitude + GenerationTestDataSource.Delta);
+            var distribution = Substitute.For<ContinuousUniformDistribution>(1 - GenerationTestDataSource.Delta, 1 + GenerationTestDataSource.Delta);
             var epicenter = Substitute.For<Firework>(expectedFireworkType, expectedBirthStepNumber - 1);
             var qualities = Substitute.For<IEnumerable<double>>();
             var sparks = Substitute.For<Dictionary<FireworkType, int>>();
