@@ -66,7 +66,7 @@ namespace FireworksNet.Explode
         /// <param name="focus">The explosion focus.</param>
         /// <param name="currentFireworkQualities">The current firework qualities.</param>
         /// <returns>The explosion amplitude.</returns>
-        public void RecalculateAmplitude(Solution focus, IEnumerable<double> currentFireworkQualities)
+        public void CalculateAmplitude(Solution focus, IEnumerable<double> currentFireworkQualities)
         {
             Debug.Assert(focus != null, "Focus is null");
             Debug.Assert(currentFireworkQualities != null, "Current firework qualities is null");

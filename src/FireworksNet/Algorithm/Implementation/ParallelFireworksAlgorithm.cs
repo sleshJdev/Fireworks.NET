@@ -22,7 +22,7 @@ namespace FireworksNet.Algorithm
     {
         private readonly System.Random randomizer;
         private IContinuousDistribution distribution;
-        private ParallelExploder exploder;         
+        private ParallelExploder exploder;
         private AlgorithmState state;
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace FireworksNet.Algorithm
         /// <summary>
         /// Gets the algorithm settings.
         /// </summary>
-        public ParallelFireworksAlgorithmSettings Settings { private set; get; }       
+        public ParallelFireworksAlgorithmSettings Settings { private set; get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ParallelFireworksAlgorithm"/> class.
@@ -66,19 +66,19 @@ namespace FireworksNet.Algorithm
         /// <c>null</c>.</exception>
         public ParallelFireworksAlgorithm(Problem problem, IStopCondition stopCondition, ParallelFireworksAlgorithmSettings settings)
         {
-            if (problem == null) 
+            if (problem == null)
             {
-                throw new System.ArgumentNullException("problem"); 
+                throw new System.ArgumentNullException("problem");
             }
-            
-            if (stopCondition == null) 
+
+            if (stopCondition == null)
             {
-                throw new System.ArgumentNullException("stopCondition"); 
+                throw new System.ArgumentNullException("stopCondition");
             }
-            
-            if (settings == null) 
+
+            if (settings == null)
             {
-                throw new System.ArgumentNullException("settings"); 
+                throw new System.ArgumentNullException("settings");
             }
 
             this.ProblemToSolve = problem;
@@ -89,90 +89,156 @@ namespace FireworksNet.Algorithm
             this.distribution = new ContinuousUniformDistribution(1 - settings.Delta, 1 + settings.Delta);
 
             this.state = CreateInitialState();
-            this.bestSolution = state.BestSolution as Firework;//TODO: improve. need try without 'as'
+            this.bestSolution = state.BestSolution as Firework;
 
-            ISparkGenerator generator = new AttractRepulseSparkGenerator(this.bestSolution, problem.Dimensions, this.distribution, this.randomizer);            
+            ISparkGenerator generator = new AttractRepulseSparkGenerator(this.bestSolution, problem.Dimensions, this.distribution, this.randomizer);
             IFireworkSelector selector = new BestFireworkSelector((fireworks) => fireworks.OrderBy(f => f.Quality).First<Firework>());//select best
             this.mutator = new AttractRepulseSparkMutator(generator);
             this.researcher = new FireworkSearchMutator(this.CalculateQualities, generator, selector, settings.SearchExplosionsCount);
 
             this.exploder = new ParallelExploder(new ParallelExploderSettings()
-            {                
+            {
                 FixedQuantitySparks = settings.FixedQuantitySparks,
                 Amplitude = settings.Amplitude,
                 ExplosionSparksMaximumAmplitude = settings.ExplosionSparksMaximumAmplitude,
                 Delta = settings.Delta
-            });                       
+            });
         }
 
+        /// <summary>
+        /// Solve problem.
+        /// </summary>
+        /// <returns>Returns the best solution.</returns>
         public Solution Solve()
-        {            
+        {
             IEnumerable<double> fireworkQualities = state.Fireworks.Select(fw => fw.Quality);
-            this.exploder.RecalculateAmplitude(this.bestSolution, fireworkQualities);
 
+            Debug.Assert(fireworkQualities != null, "Firework qualities is null");
+            
+            this.exploder.CalculateAmplitude(this.bestSolution, fireworkQualities);
+            
             while (!ShouldStop(this.state))
             {
-                MakeStep(state);
+                Debug.Assert(this.state != null, "State is null");
+
+                this.MakeStep(ref state);
+
+                Debug.Assert(this.state != null, "State is null");
             }
 
-            return this.state.BestSolution;
+            Debug.Assert(this.bestSolution != null, "Best solution is null");
+
+            return this.bestSolution;
         }
 
-        public AlgorithmState MakeStep(AlgorithmState state)
+        /// <summary>
+        /// Makes one step of solve.
+        /// </summary>
+        /// <param name="state">The state after previous step.</param>
+        /// <exception cref="ArgumentNullException">if state is <c>null</c></exception>
+        private void MakeStep(ref AlgorithmState state)
         {
-            //TODO: 
-            //1. gpu thread for each reseacher
-            //2. improve the creation of the initial fireworks
-            //3. add overload of MutateFirework, which don't will change state
-            
             if(state == null)
             {
                 throw new ArgumentNullException("state");
             }
 
             IEnumerable<double> fireworkQualities = state.Fireworks.Select(fw => fw.Quality);
-            FireworkExplosion explosion = this.exploder.Explode(this.bestSolution, fireworkQualities, state.StepNumber) as FireworkExplosion;//TODO: improve. need try without 'as'
-            
+
+            Debug.Assert(fireworkQualities != null, "Firework qualities is null");
+
+            FireworkExplosion explosion = this.exploder.Explode(this.bestSolution, fireworkQualities, state.StepNumber) as FireworkExplosion;
+
+            Debug.Assert(explosion != null, "Explosion is null");
+
             //search
             foreach (MutableFirework firework in state.Fireworks)
             {
                 MutableFirework mirror = firework;// cannot pass 'firework' as a ref or out argument because it is a 'foreach iteration variable'
-                this.researcher.MutateFirework(ref mirror, explosion);   
+
+                Debug.Assert(mirror != null, "Firework is null");
+
+                this.researcher.MutateFirework(ref mirror, explosion);
+
+                Debug.Assert(mirror != null, "Firework is null");
             }
 
             //mutation
             foreach (MutableFirework firework in state.Fireworks)
             {
                 MutableFirework mirror = firework;// cannot pass 'firework' as a ref or out argument because it is a 'foreach iteration variable'
+
+                Debug.Assert(mirror != null, "Firework is null");
+
                 this.mutator.MutateFirework(ref mirror, explosion);
+
+                Debug.Assert(mirror != null, "Firework is null");
             }
 
             this.CalculateQualities(state.Fireworks);
-            this.exploder.RecalculateAmplitude(this.bestSolution, fireworkQualities);
+            this.exploder.CalculateAmplitude(this.bestSolution, fireworkQualities);
+        }
 
-            return state;
-        }       
+        /// <summary>
+        /// Make one step of algorithm.
+        /// </summary>
+        /// <param name="state">The state after previous step.</param>
+        /// <returns>The new state of algorithm.</returns>
+        /// <exception cref="ArgumentNullException">if state is <c>null</c></exception>
+        public AlgorithmState MakeStep(AlgorithmState state)
+        {
+            //TODO: 
+            //1. gpu thread for each researcher
 
-        //TODO: or return state.BestSolution?
+            if (state == null)
+            {
+                throw new ArgumentNullException("state");
+            }
+
+            AlgorithmState newState = new AlgorithmState()
+            {
+                BestSolution = state.BestSolution,
+                Fireworks = state.Fireworks,
+                StepNumber = state.StepNumber            
+            };
+
+            this.MakeStep(ref newState);
+
+            Debug.Assert(newState != null, "New state is null");
+
+            return newState;
+        }
+
+        /// <summary>
+        /// Returns best solution after algorithm work.
+        /// </summary>
+        /// <param name="state">The state after calculating.</param>
+        /// <returns>The best solution.</returns>
         public Solution GetSolution(AlgorithmState state)
         {
-            if (this.bestSolution == null) 
+            if (this.bestSolution == null)
             {
-                throw new System.ArgumentNullException("state"); 
+                throw new ArgumentNullException("state");
             }
 
             return this.bestSolution;
         }
 
+        /// <summary>
+        /// Checks is if algorithm should be stop.
+        /// </summary>
+        /// <param name="state">The current state of algorithm.</param>
+        /// <returns><c>true</c> if should be stopped, otherwise - <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">if state is <c>null</c>.</exception>
         public bool ShouldStop(AlgorithmState state)
         {
-            if (state == null) 
-            { 
-                throw new System.ArgumentNullException("state"); 
+            if (state == null)
+            {
+                throw new ArgumentNullException("state");
             }
 
-            return StopCondition.ShouldStop(state);
-        }         
+            return this.StopCondition.ShouldStop(state);
+        }
 
         public AlgorithmState CreateInitialState()
         {
@@ -182,7 +248,7 @@ namespace FireworksNet.Algorithm
 
             InitialExplosion explosion = new InitialExplosion(this.Settings.FixedQuantitySparks);
             ISparkGenerator sparkGenerator = new InitialSparkGenerator(this.ProblemToSolve.Dimensions, this.randomizer);
-            IEnumerable<MutableFirework> sparks = MakeMutable(sparkGenerator.CreateSparks(explosion));            
+            IEnumerable<MutableFirework> sparks = this.MakeMutant(sparkGenerator.CreateSparks(explosion));
 
             Debug.Assert(sparks != null, "sparks is null");
 
@@ -191,13 +257,20 @@ namespace FireworksNet.Algorithm
             state.BestSolution = ProblemToSolve.GetBest(sparks);
             state.StepNumber = 0;
 
-            CalculateQualities(state.Fireworks);
+            this.CalculateQualities(state.Fireworks);
 
             return state;
         }
-
-        private IEnumerable<MutableFirework> MakeMutable(IEnumerable<Firework> collection)
+        
+        /// <summary>
+        /// Turns firework to mutable firework.
+        /// </summary>
+        /// <param name="collection">The collection of firework for processing.</param>
+        /// <returns>Collection of mutable fireworks.</returns>
+        private IEnumerable<MutableFirework> MakeMutant(IEnumerable<Firework> collection)
         {
+            Debug.Assert(collection != null, "Collection is null");
+
             Firework[] sparks = collection.ToArray();
             IList<MutableFirework> mutableSparks = new List<MutableFirework>(sparks.Length);
             for (int i = 0; i < sparks.Length; ++i)
@@ -208,11 +281,22 @@ namespace FireworksNet.Algorithm
             return mutableSparks;
         }
 
+        /// <summary>
+        /// Calculate qualities for fireworks.
+        /// </summary>
+        /// <param name="sparks">The collection of sparks for which need calculate qualities.</param>
         private void CalculateQualities(IEnumerable<Firework> sparks)
         {
+            Debug.Assert(sparks != null, "Sparks collection is null");
+            Debug.Assert(this.ProblemToSolve != null, "Problem to solve is null");
+
             foreach (Firework spark in sparks)
-            {        
-               spark.Quality = ProblemToSolve.CalculateQuality(spark.Coordinates);
+            {
+                Debug.Assert(spark != null, "Firework is null");
+                Debug.Assert(double.IsNaN(spark.Quality), "Excessive quality calculation"); // If quality is not NaN, it most likely has been already calculated
+                Debug.Assert(spark.Coordinates != null, "Firework coordinates collection is null");
+
+                spark.Quality = this.ProblemToSolve.CalculateQuality(spark.Coordinates);
             }
         }
     }
