@@ -62,6 +62,10 @@
     <Compile Include="Explode\ParallelExploderSettings.cs" />
     <Compile Include="Fit\IFit.cs" />
     <Compile Include="Fit\PolynomialFit.cs" />
+    <Compile Include="Generation\EliteStrategyGenerator.cs" />
+    <Compile Include="Generation\LS1EliteStrategyGenerator.cs" />
+    <Compile Include="Generation\LS2EliteStrategyGenerator.cs" />
+    <Compile Include="Model\EliteExplosion.cs" />
     <Compile Include="Mutation\AttractRepulseSparkMutator.cs" />
     <Compile Include="Extensions\RandomExtensions.cs" />
     <Compile Include="Algorithm\Implementation\FireworksAlgorithmSettings.cs" />
