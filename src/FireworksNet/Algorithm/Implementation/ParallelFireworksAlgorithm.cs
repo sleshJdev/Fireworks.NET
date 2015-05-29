@@ -141,7 +141,8 @@ namespace FireworksNet.Algorithm
             //TODO:
             //  1. to change MutableFirework: add properties such as Amplitude and maybe other
             //  2. to improve logic: for best of firework Amplitude should not 0
-            //  3. to improve logic of calculation of quality: maybe override method CalculateQualities and pass to it IEnumerable<Firework>, to avoid invoke .Select(...)
+            //  3. to improve logic of work with fireworkQualities collection: maybe update specific item, to avoid invoke .Select(...)
+            //  4. add gpu thread for each researcher
 
             // search
             foreach (MutableFirework firework in state.Fireworks)
@@ -154,9 +155,9 @@ namespace FireworksNet.Algorithm
 
                 Debug.Assert(fireworkQualities != null, "Firework qualities is null");
                
-                this.exploder.CalculateAmplitude(dubler, fireworkQualities); 
-                
-                FireworkExplosion explosion = this.exploder.Explode(dubler, fireworkQualities, state.StepNumber) as FireworkExplosion;
+                this.exploder.CalculateAmplitude(dubler, fireworkQualities);
+
+                FireworkExplosion explosion = this.exploder.Explode(dubler, fireworkQualities, state.StepNumber) as FireworkExplosion;//TODO: how avoid 'as'???
 
                 Debug.Assert(explosion != null, "Explosion is null");
 
@@ -178,7 +179,7 @@ namespace FireworksNet.Algorithm
 
                 this.exploder.CalculateAmplitude(dubler, fireworkQualities);
                 
-                FireworkExplosion explosion = this.exploder.Explode(dubler, fireworkQualities, state.StepNumber) as FireworkExplosion;
+                FireworkExplosion explosion = this.exploder.Explode(dubler, fireworkQualities, state.StepNumber) as FireworkExplosion;//TODO: how avoid 'as'???
 
                 Debug.Assert(explosion != null, "Explosion is null");
 
@@ -204,9 +205,6 @@ namespace FireworksNet.Algorithm
         /// <exception cref="ArgumentNullException">if state is <c>null</c></exception>
         public AlgorithmState MakeStep(AlgorithmState state)
         {
-            //TODO: 
-            //1. gpu thread for each researcher
-
             if (state == null)
             {
                 throw new ArgumentNullException("state");
