@@ -36,7 +36,7 @@ namespace FireworksNet.Generation
         /// or <paramref name="dimensions"/> or <paramref name="distribution"/> or
         /// <paramref name="randomizer"/> is <c>null</c>.
         /// </exception>
-        public AttractRepulseSparkGenerator(Solution bestSolution, IEnumerable<Dimension> dimensions, IContinuousDistribution distribution, System.Random randomizer)
+        public AttractRepulseSparkGenerator(ref Solution bestSolution, IEnumerable<Dimension> dimensions, IContinuousDistribution distribution, System.Random randomizer)
         {
             if (bestSolution == null)
             {
@@ -96,10 +96,11 @@ namespace FireworksNet.Generation
                 if (this.randomizer.NextBoolean()) // Coin flip
                 {
                     spark.Coordinates[dimension] += (spark.Coordinates[dimension] - copyOfBestSolution.Coordinates[dimension]) * scalingFactor;
-                    if (!dimension.IsValueInRange(spark.Coordinates[dimension]))
-                    {
-                        spark.Coordinates[dimension] = dimension.VariationRange.Minimum + Math.Abs(spark.Coordinates[dimension]) % dimension.VariationRange.Length;
-                    }
+                }
+
+                if (!dimension.IsValueInRange(spark.Coordinates[dimension]))
+                {
+                    spark.Coordinates[dimension] = dimension.VariationRange.Minimum + Math.Abs(spark.Coordinates[dimension]) % dimension.VariationRange.Length;
                 }
             }
 

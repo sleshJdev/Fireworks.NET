@@ -18,6 +18,7 @@ namespace FireworksNet.Model
         public MutableFirework(Firework firework)
             : this(firework.FireworkType, firework.BirthStepNumber, firework.Coordinates)
         {
+            Quality = firework.Quality;
         }
 
         /// <summary>
@@ -50,6 +51,7 @@ namespace FireworksNet.Model
         /// <param name="newState">New state of firework.</param>
         public void Update(Firework newState)
         {
+            this.FireworkType = newState.FireworkType;
             this.BirthStepNumber = newState.BirthStepNumber;
             this.Coordinates = newState.Coordinates;
             this.Quality = newState.Quality;

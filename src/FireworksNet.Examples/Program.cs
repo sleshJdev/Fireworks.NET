@@ -1,13 +1,21 @@
-﻿using FireworksNet.Algorithm.Implementation;
+﻿using FireworksNet.Algorithm;
+using FireworksNet.Algorithm.Implementation;
 using FireworksNet.Model;
 using FireworksNet.Problems.Benchmark;
 using FireworksNet.StopConditions;
+using System;
 
 namespace FireworksNet.Examples
 {
     public class Program
     {
-        private static void Main(string[] args)
+        public static void Main(string[] args)
+        {
+            Program program = new Program();
+            program.ShowExample2();
+        }
+
+        public void ShowExample1()
         {
             // 1. Define a problem to solve
             Sphere problem = Sphere.Create();
@@ -38,6 +46,33 @@ namespace FireworksNet.Examples
             //       2. Define user problem
             //       3. Composite stop condition
             //       4. Capture states after each step
+
+            Console.WriteLine("Solution: {0}", solution.Quality);
+            Console.ReadLine();
+        }
+
+        public void ShowExample2()
+        {
+            Sphere problem = Sphere.Create();
+
+            CounterStopCondition stopCondition = new CounterStopCondition(10000);
+            problem.QualityCalculated += stopCondition.IncrementCounter;
+
+            ParallelFireworksAlgorithmSettings settings = new ParallelFireworksAlgorithmSettings()
+            {
+                ExplosionSparksMaximumAmplitude = 1.0,
+                Amplitude = 1.0,
+                Delta = 0.9,
+                FixedQuantitySparks = 16,
+                SearchExplosionsCount = 16,                
+            };
+
+            ParallelFireworksAlgorithm algorithm = new ParallelFireworksAlgorithm(problem, stopCondition, settings);
+
+            Solution solution = algorithm.Solve();
+
+            Console.WriteLine("Solution {0}", solution.Quality);
+            Console.ReadLine();
         }
     }
 }

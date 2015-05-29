@@ -38,7 +38,7 @@ namespace FireworksNet.Algorithm
         /// <summary>
         /// Represent best solution in now.
         /// </summary>
-        private Firework bestSolution;
+        private Solution bestSolution;
 
         /// <summary>
         /// Gets the problem to be solved by the algorithm.
@@ -89,12 +89,11 @@ namespace FireworksNet.Algorithm
             this.distribution = new ContinuousUniformDistribution(1 - settings.Delta, 1 + settings.Delta);
 
             this.state = CreateInitialState();
-            this.bestSolution = state.BestSolution as Firework;
+            this.bestSolution = state.BestSolution;
 
-            ISparkGenerator generator = new AttractRepulseSparkGenerator(this.bestSolution, problem.Dimensions, this.distribution, this.randomizer);
-            IFireworkSelector selector = new BestFireworkSelector((fireworks) => fireworks.OrderBy(f => f.Quality).First<Firework>());//select best
+            ISparkGenerator generator = new AttractRepulseSparkGenerator(ref this.bestSolution, problem.Dimensions, this.distribution, this.randomizer);
             this.mutator = new AttractRepulseSparkMutator(generator);
-            this.researcher = new FireworkSearchMutator(this.CalculateQualities, generator, selector, settings.SearchExplosionsCount);
+            this.researcher = new FireworkSearchMutator(this.CalculateQualities, generator, problem.GetBest, settings.SearchExplosionsCount);
 
             this.exploder = new ParallelExploder(new ParallelExploderSettings()
             {
@@ -111,12 +110,6 @@ namespace FireworksNet.Algorithm
         /// <returns>Returns the best solution.</returns>
         public Solution Solve()
         {
-            IEnumerable<double> fireworkQualities = state.Fireworks.Select(fw => fw.Quality);
-
-            Debug.Assert(fireworkQualities != null, "Firework qualities is null");
-            
-            this.exploder.CalculateAmplitude(this.bestSolution, fireworkQualities);
-            
             while (!ShouldStop(this.state))
             {
                 Debug.Assert(this.state != null, "State is null");
@@ -126,7 +119,7 @@ namespace FireworksNet.Algorithm
                 Debug.Assert(this.state != null, "State is null");
             }
 
-            Debug.Assert(this.bestSolution != null, "Best solution is null");
+            Debug.Assert(this.bestSolution != null, "Best solution is null");           
 
             return this.bestSolution;
         }
@@ -143,40 +136,64 @@ namespace FireworksNet.Algorithm
                 throw new ArgumentNullException("state");
             }
 
-            IEnumerable<double> fireworkQualities = state.Fireworks.Select(fw => fw.Quality);
+            this.state.StepNumber++;
 
-            Debug.Assert(fireworkQualities != null, "Firework qualities is null");
+            //TODO:
+            //  1. to change MutableFirework: add properties such as Amplitude and maybe other
+            //  2. to improve logic: for best of firework Amplitude should not 0
+            //  3. to improve logic of calculation of quality: maybe override method CalculateQualities and pass to it IEnumerable<Firework>, to avoid invoke .Select(...)
 
-            FireworkExplosion explosion = this.exploder.Explode(this.bestSolution, fireworkQualities, state.StepNumber) as FireworkExplosion;
-
-            Debug.Assert(explosion != null, "Explosion is null");
-
-            //search
+            // search
             foreach (MutableFirework firework in state.Fireworks)
             {
-                MutableFirework mirror = firework;// cannot pass 'firework' as a ref or out argument because it is a 'foreach iteration variable'
+                Debug.Assert(firework != null, "Firework is null");
 
-                Debug.Assert(mirror != null, "Firework is null");
+                MutableFirework dubler = firework;//Cannot pass 'firework' as a ref or out argument because it is a 'foreach iteration variable'
+                
+                IEnumerable<double> fireworkQualities = state.Fireworks.Select(fw => fw.Quality);
 
-                this.researcher.MutateFirework(ref mirror, explosion);
+                Debug.Assert(fireworkQualities != null, "Firework qualities is null");
+               
+                this.exploder.CalculateAmplitude(dubler, fireworkQualities); 
+                
+                FireworkExplosion explosion = this.exploder.Explode(dubler, fireworkQualities, state.StepNumber) as FireworkExplosion;
 
-                Debug.Assert(mirror != null, "Firework is null");
+                Debug.Assert(explosion != null, "Explosion is null");
+
+                this.researcher.MutateFirework(ref dubler, explosion);
+
+                Debug.Assert(dubler == firework, "Dubler must be equals firework");
             }
 
-            //mutation
+            // mutation
             foreach (MutableFirework firework in state.Fireworks)
             {
-                MutableFirework mirror = firework;// cannot pass 'firework' as a ref or out argument because it is a 'foreach iteration variable'
+                Debug.Assert(firework != null, "Firework is null");
 
-                Debug.Assert(mirror != null, "Firework is null");
+                MutableFirework dubler = firework;//Cannot pass 'firework' as a ref or out argument because it is a 'foreach iteration variable'
 
-                this.mutator.MutateFirework(ref mirror, explosion);
+                IEnumerable<double> fireworkQualities = state.Fireworks.Select(fw => fw.Quality);
 
-                Debug.Assert(mirror != null, "Firework is null");
+                Debug.Assert(fireworkQualities != null, "Firework qualities is null");
+
+                this.exploder.CalculateAmplitude(dubler, fireworkQualities);
+                
+                FireworkExplosion explosion = this.exploder.Explode(dubler, fireworkQualities, state.StepNumber) as FireworkExplosion;
+
+                Debug.Assert(explosion != null, "Explosion is null");
+
+                this.mutator.MutateFirework(ref dubler, explosion);
+
+                Debug.Assert(dubler == firework, "Dubler must be equals firework");
+
+                dubler.Quality = this.ProblemToSolve.CalculateQuality(dubler.Coordinates);
+
+                Debug.WriteLine(string.Format("Iteration: {0}, Quality: {1}, Amplitude: {2}", state.StepNumber, dubler.Quality, explosion.Amplitude));
             }
 
-            this.CalculateQualities(state.Fireworks);
-            this.exploder.CalculateAmplitude(this.bestSolution, fireworkQualities);
+            this.bestSolution = this.ProblemToSolve.GetBest(state.Fireworks);            
+
+            Debug.WriteLine(string.Format("Iteration: {0}. Best quality: {1}", this.state.StepNumber, this.bestSolution.Quality));
         }
 
         /// <summary>
@@ -247,21 +264,20 @@ namespace FireworksNet.Algorithm
             Debug.Assert(this.randomizer != null, "Generator cannot be null");
 
             InitialExplosion explosion = new InitialExplosion(this.Settings.FixedQuantitySparks);
-            ISparkGenerator sparkGenerator = new InitialSparkGenerator(this.ProblemToSolve.Dimensions, this.randomizer);
+            ISparkGenerator sparkGenerator = new InitialSparkGenerator(this.ProblemToSolve.Dimensions, this.ProblemToSolve.InitialRanges, this.randomizer);
             IEnumerable<Firework> originSparks = sparkGenerator.CreateSparks(explosion);
 
             Debug.Assert(originSparks != null, "Origin sparks collection is null");
 
             IEnumerable<MutableFirework> sparks = this.MakeMutant(originSparks);
+            this.CalculateQualities(sparks);
 
             Debug.Assert(sparks != null, "sparks is null");
 
             AlgorithmState state = new AlgorithmState();
             state.Fireworks = sparks;
             state.BestSolution = ProblemToSolve.GetBest(sparks);
-            state.StepNumber = 0;
-
-            this.CalculateQualities(state.Fireworks);
+            state.StepNumber = 0;            
 
             return state;
         }
@@ -297,7 +313,7 @@ namespace FireworksNet.Algorithm
             foreach (Firework spark in sparks)
             {
                 Debug.Assert(spark != null, "Firework is null");
-                Debug.Assert(double.IsNaN(spark.Quality), "Excessive quality calculation"); // If quality is not NaN, it most likely has been already calculated
+                //Debug.Assert(double.IsNaN(spark.Quality), "Excessive quality calculation"); // If quality is not NaN, it most likely has been already calculated
                 Debug.Assert(spark.Coordinates != null, "Firework coordinates collection is null");
 
                 spark.Quality = this.ProblemToSolve.CalculateQuality(spark.Coordinates);
