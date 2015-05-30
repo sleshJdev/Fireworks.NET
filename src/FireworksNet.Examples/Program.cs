@@ -55,14 +55,14 @@ namespace FireworksNet.Examples
         {
             Sphere problem = Sphere.Create();
 
-            CounterStopCondition stopCondition = new CounterStopCondition(10000);
+            CounterStopCondition stopCondition = new CounterStopCondition(100000);
             problem.QualityCalculated += stopCondition.IncrementCounter;
 
             ParallelFireworksAlgorithmSettings settings = new ParallelFireworksAlgorithmSettings()
             {
                 ExplosionSparksMaximumAmplitude = 1.0,
                 Amplitude = 1.0,
-                Delta = 0.9,
+                Delta = 0.8,
                 FixedQuantitySparks = 16,
                 SearchExplosionsCount = 16,                
             };

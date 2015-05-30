@@ -15,7 +15,7 @@ namespace FireworksNet.Tests.Mutation
         [Theory]
         [MemberData("DataForTestCreationOfFireworkSearchMutator")]
         public void CreationFireworkSearchMutator_PassEachFromFirstThreeParameterAsNullAndOtherIsCorrect_ArgumentNullExceptionThrown(
-            Action<IEnumerable<Firework>> calculator, ISparkGenerator generator, IFireworkSelector selector, int searchExplosionsCount, string expectedParamName)
+            Action<IEnumerable<Firework>> calculator, ISparkGenerator generator, Func<IEnumerable<Firework>, Firework> selector, int searchExplosionsCount, string expectedParamName)
         {
             ArgumentException exception = Assert.Throws<ArgumentNullException>(() => new FireworkSearchMutator(calculator, generator, selector, searchExplosionsCount));
 
@@ -28,7 +28,7 @@ namespace FireworksNet.Tests.Mutation
             const string expectedParamName = "searchExplosionsCount";
             Action<IEnumerable<Firework>> calculator = ((e) => { });//simply stub
             var generator = CreateAttractRepulseSparkGenerator();
-            var selector = Substitute.For<BestFireworkSelector>(Substitute.For<Func<IEnumerable<Firework>, Firework>>());
+            var selector = Substitute.For<Func<IEnumerable<Firework>, Firework>>();
             var searchExplosionsCount = 0;
 
             ArgumentException exception = Assert.Throws<ArgumentOutOfRangeException>(() => new FireworkSearchMutator(calculator, generator, selector, searchExplosionsCount));
@@ -41,7 +41,7 @@ namespace FireworksNet.Tests.Mutation
         {
             var calculator = Substitute.For<Action<IEnumerable<Firework>>>();
             var generator = CreateAttractRepulseSparkGenerator();
-            var selector = Substitute.For<BestFireworkSelector>(Substitute.For<Func<IEnumerable<Firework>, Firework>>());
+            var selector = Substitute.For<Func<IEnumerable<Firework>, Firework>>();
             var searchExplosionsCount = 5;
 
             IFireworkMutator researcher = new FireworkSearchMutator(calculator, generator, selector, searchExplosionsCount);
@@ -56,7 +56,7 @@ namespace FireworksNet.Tests.Mutation
         {
             var calculator = Substitute.For<Action<IEnumerable<Firework>>>();
             var generator = CreateAttractRepulseSparkGenerator();
-            var selector = Substitute.For<BestFireworkSelector>(Substitute.For<Func<IEnumerable<Firework>, Firework>>());
+            var selector = Substitute.For<Func<IEnumerable<Firework>, Firework>>();
             var searchExplosionsCount = 5;
             IFireworkMutator researcher = new FireworkSearchMutator(calculator, generator, selector, searchExplosionsCount);
 
@@ -104,9 +104,8 @@ namespace FireworksNet.Tests.Mutation
             var generator = CreateAttractRepulseSparkGenerator();
             generator.CreateSparks(explosion).Returns(sparks);
 
-            var selector = Substitute.For<BestFireworkSelector>(Substitute.For<Func<IEnumerable<Firework>, Firework>>());
-            selector.SelectFireworks(sparks).Returns(new List<Firework>() { bestFirework });
-
+            Func<IEnumerable<Firework>, Firework> selector = (fs) => { return bestFirework; };
+            
             var searchExplosionsCount = 5;
 
             IFireworkMutator researcher = new FireworkSearchMutator(calculator, generator, selector, searchExplosionsCount);

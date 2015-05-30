@@ -36,7 +36,7 @@ namespace FireworksNet.Generation
         /// or <paramref name="dimensions"/> or <paramref name="distribution"/> or
         /// <paramref name="randomizer"/> is <c>null</c>.
         /// </exception>
-        public AttractRepulseSparkGenerator(ref Solution bestSolution, IEnumerable<Dimension> dimensions, IContinuousDistribution distribution, System.Random randomizer)
+        public AttractRepulseSparkGenerator(Solution bestSolution, IEnumerable<Dimension> dimensions, IContinuousDistribution distribution, System.Random randomizer)
         {
             if (bestSolution == null)
             {

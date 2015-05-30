@@ -91,7 +91,7 @@ namespace FireworksNet.Algorithm
             this.state = CreateInitialState();
             this.bestSolution = state.BestSolution;
 
-            ISparkGenerator generator = new AttractRepulseSparkGenerator(ref this.bestSolution, problem.Dimensions, this.distribution, this.randomizer);
+            ISparkGenerator generator = new AttractRepulseSparkGenerator(this.bestSolution, problem.Dimensions, this.distribution, this.randomizer);
             this.mutator = new AttractRepulseSparkMutator(generator);
             this.researcher = new FireworkSearchMutator(this.CalculateQualities, generator, problem.GetBest, settings.SearchExplosionsCount);
 
