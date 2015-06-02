@@ -58,27 +58,6 @@ namespace FireworksNet.Explode
             };
 
             return new FireworkExplosion(epicenter, currentStepNumber, this.settings.Amplitude, sparks);
-        }
-
-        /// <summary>
-        /// Calculates the explosion amplitude.
-        /// </summary>
-        /// <param name="focus">The explosion focus.</param>
-        /// <param name="currentFireworkQualities">The current firework qualities.</param>
-        /// <returns>The explosion amplitude.</returns>
-        public void CalculateAmplitude(Solution focus, IEnumerable<double> currentFireworkQualities)
-        {
-            Debug.Assert(focus != null, "Focus is null");
-            Debug.Assert(currentFireworkQualities != null, "Current firework qualities is null");
-            Debug.Assert(this.settings != null, "Settings is null");
-
-            // Using Aggregate() here because Min() won't use my double extensions
-            double minFireworkQuality = currentFireworkQualities.Aggregate((agg, next) => next.IsLess(agg) ? next : agg);
-
-            Debug.Assert(!double.IsNaN(minFireworkQuality), "Min firework quality is NaN");
-            Debug.Assert(!double.IsInfinity(minFireworkQuality), "Min firework quality is Infinity");           
-
-            this.settings.Amplitude = this.settings.ExplosionSparksMaximumAmplitude * (focus.Quality - minFireworkQuality + double.Epsilon) / (currentFireworkQualities.Sum(fq => fq - minFireworkQuality) + double.Epsilon);
         }        
     }
 }

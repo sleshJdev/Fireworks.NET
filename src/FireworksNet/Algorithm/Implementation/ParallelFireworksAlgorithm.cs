@@ -99,7 +99,6 @@ namespace FireworksNet.Algorithm
             {
                 FixedQuantitySparks = settings.FixedQuantitySparks,
                 Amplitude = settings.Amplitude,
-                ExplosionSparksMaximumAmplitude = settings.ExplosionSparksMaximumAmplitude,
                 Delta = settings.Delta
             });
         }
@@ -144,19 +143,17 @@ namespace FireworksNet.Algorithm
             //  3. to improve logic of work with fireworkQualities collection: maybe update specific item, to avoid invoke .Select(...)
             //  4. add gpu thread for each researcher
 
+            IEnumerable<double> fireworkQualities = state.Fireworks.Select(fw => fw.Quality);
+
+            Debug.Assert(fireworkQualities != null, "Firework qualities is null");
+
             // search
             foreach (MutableFirework firework in state.Fireworks)
             {
                 Debug.Assert(firework != null, "Firework is null");
 
                 MutableFirework dubler = firework;//Cannot pass 'firework' as a ref or out argument because it is a 'foreach iteration variable'
-                
-                IEnumerable<double> fireworkQualities = state.Fireworks.Select(fw => fw.Quality);
-
-                Debug.Assert(fireworkQualities != null, "Firework qualities is null");
                
-                this.exploder.CalculateAmplitude(dubler, fireworkQualities);
-
                 FireworkExplosion explosion = this.exploder.Explode(dubler, fireworkQualities, state.StepNumber) as FireworkExplosion;//TODO: how avoid 'as'???
 
                 Debug.Assert(explosion != null, "Explosion is null");
@@ -173,12 +170,6 @@ namespace FireworksNet.Algorithm
 
                 MutableFirework dubler = firework;//Cannot pass 'firework' as a ref or out argument because it is a 'foreach iteration variable'
 
-                IEnumerable<double> fireworkQualities = state.Fireworks.Select(fw => fw.Quality);
-
-                Debug.Assert(fireworkQualities != null, "Firework qualities is null");
-
-                this.exploder.CalculateAmplitude(dubler, fireworkQualities);
-                
                 FireworkExplosion explosion = this.exploder.Explode(dubler, fireworkQualities, state.StepNumber) as FireworkExplosion;//TODO: how avoid 'as'???
 
                 Debug.Assert(explosion != null, "Explosion is null");
